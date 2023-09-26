@@ -247,8 +247,45 @@ def subscription_duration_stats(df):
     print("Average Subscription Duration:")
     print(f"Subscriber: {avg_duration['Subscriber']} minutes")
     print(f"Customer: {avg_duration['Customer']} minutes")
+    print('-' * 40)
 
+def display_raw_data(df):
+    """
+    Displays raw data in bits of 5 rows at a time and prompts the user to continue or stop.
 
+    Args:
+        df (pd.DataFrame): Pandas DataFrame containing bikeshare data.
+    """
+    raw_data_displayed = 0
+    index = 0
+    _size = 10
+
+    # To display all columns in full with out the ...
+    pd.set_option('display.max_columns', None)  
+    pd.set_option('display.expand_frame_repr', False) # No column break
+    pd.set_option('display.max_colwidth', 25)  # column width
+
+    while True:
+        raw_data = df.iloc[index:index + _size]
+        print(raw_data)
+        print('-' * 170)
+
+        raw_data_displayed += len(raw_data)
+        index += _size
+
+        if index >= len(df):
+            print("No more raw data to display.")
+            break
+
+        while True:
+            user_input = input(f"Do you want to see the next {_size} lines of raw data? Enter 'yes' to continue or 'no' to stop: ")
+            print('-' * 170)
+
+            if user_input.lower() == 'yes':
+                break
+            elif user_input.lower() == 'no':
+                return
+            
 def main():
     while True:
         city, month, day = get_filters()
@@ -260,6 +297,8 @@ def main():
         user_stats(df)
         user_age_groups(df)
         subscription_duration_stats(df)
+        display_raw_data(df)
+
 
         restart = input('\nWould you like to restart? Enter yes or no.\n')
         if restart.lower() != 'yes':
